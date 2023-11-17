@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
   const onFinish = async (values: any) => {
     const { data } = await mutateAsync(values);
     localStorage.setItem("token", data?.token);
-    nav("/news");
+    nav("/clubs");
     message.success("Đăng nhập thành công.");
   };
 

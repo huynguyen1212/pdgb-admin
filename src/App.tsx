@@ -23,10 +23,17 @@ type MenuItem = {
 
 export const pages: MenuItem[] = [
   {
-    label: <Link to={"/news"}>Quản lý Bài viết</Link>,
-    key: "news",
+    label: <Link to={"/clubs"}>Quản lý Clubs</Link>,
+    key: "clubs",
     icon: <AuditOutlined />,
     componnent: <NewsPage type={NewsType.CONTENT} />,
+    isnavbar: true,
+  },
+  {
+    label: <Link to={"/matchs"}>Quản lý Matchs</Link>,
+    key: "matchs",
+    icon: <FolderOpenOutlined />,
+    componnent: <ImageManagePage />,
     isnavbar: true,
   },
   {
@@ -34,13 +41,6 @@ export const pages: MenuItem[] = [
     key: "account",
     icon: <UserOutlined />,
     componnent: <AccountPage />,
-    isnavbar: true,
-  },
-  {
-    label: <Link to={"/media-manage"}>Quản lý Tài liệu</Link>,
-    key: "media-manage",
-    icon: <FolderOpenOutlined />,
-    componnent: <ImageManagePage />,
     isnavbar: true,
   },
 ];

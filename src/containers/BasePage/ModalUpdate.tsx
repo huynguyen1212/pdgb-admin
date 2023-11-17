@@ -136,7 +136,7 @@ export default function ModalNewsUpdate(props: any) {
               rules={[{ required: true }]}
             >
               <Input
-                prefix={"https://cubing.asia/news/"}
+                prefix={"https://pdgb/news/"}
                 placeholder={"Đường dẫn url"}
               />
             </Form.Item>
