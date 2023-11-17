@@ -15,6 +15,6 @@ if [ "$should_npm_install" = true ]; then
 fi
 
 npm run build
-cp -r dist/. /var/www/html/beworks/admin
+cp -r dist/. /var/www/html/pdgb/admin
 
 echo "Build done..."

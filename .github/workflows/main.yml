@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.PASS }}
           port: 22
           script: |
-            cd /root/beworks-admin
+            cd /root/pdgb-admin
             sh build.sh
       - name: Alll done....
         run: echo Alll done....
