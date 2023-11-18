@@ -40,7 +40,7 @@ export default function MyLayout(props: Props) {
         onCollapse={(value) => setCollapsed(value)}
       >
         <h1 className="text-white text-center p-[32px_12px_12px] text-lg">
-          {collapsed ? "Admin" : "Admin - Syntech"}
+          {collapsed ? "Admin" : "Admin"}
         </h1>
         <Menu
           theme="dark"
