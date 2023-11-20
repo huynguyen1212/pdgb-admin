@@ -19,10 +19,10 @@ const LoginPage: React.FC = () => {
   const nav = useNavigate();
 
   const onFinish = async (values: any) => {
-    const { data } = await mutateAsync(values);
-    localStorage.setItem("token", data?.token);
+    // const { data } = await mutateAsync(values);
+    // localStorage.setItem("token", data?.token);
     nav("/clubs");
-    message.success("Đăng nhập thành công.");
+    // message.success("Đăng nhập thành công.");
   };
 
   return (
