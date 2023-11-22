@@ -8,7 +8,7 @@ import { request } from "../../configs/api";
 const LoginPage: React.FC = () => {
   const { isLoading, mutateAsync } = useMutation({
     mutationFn: (data) =>
-      request({ method: "POST", url: "/admin/login", data: data }),
+      request({ method: "POST", url: "/api/cms/login", data: data }),
     onError(error: any, variables, context) {
       message.error(error?.response?.data?.message || "Thất bại");
     },
@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
         rules={[{ required: true, message: "Vui lòng điền tên tài khoản!" }]}
       >
         <Input
-          prefix={<UserOutlined className="site-form-item-icon" />}
+          // prefix={<UserOutlined className="site-form-item-icon" />}
           placeholder="Username"
         />
       </Form.Item>

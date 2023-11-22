@@ -20,7 +20,8 @@ import { requestToken } from "../../../configs/api";
 import { cleanObject, getPublic, tryImageUrl } from "../../../configs/help";
 import { queryClient, queryKeys } from "../../../configs/query";
 import { TNews } from "../../../configs/type";
-import DetailTeams from "./DetailTeams";
+// import DetailTeams from "./DetailTeams";
+import { useParams, useNavigate } from "react-router-dom";
 
 const testData = [
   {
@@ -39,12 +40,10 @@ interface IModalDetail {
 
 const ListTeams = () => {
   const [search, setSearch] = useState({ keyword: "" });
+  const { id: clubId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [contentType, setContentType] = useState<any>();
-  const [modalDetailStatus, setModalDetailStatus] = useState<IModalDetail>({
-    isOpen: false,
-    id: 0,
-  });
+  const navigate = useNavigate();
 
   const [paging, setPaging] = useState({
     totalDocs: 0,
@@ -53,11 +52,11 @@ const ListTeams = () => {
   });
 
   const { data, refetch } = useQuery({
-    queryKey: ["newsAll"],
+    queryKey: ["listTeams"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/news",
+        url: `/api/cms/team/${clubId}`,
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -65,6 +64,7 @@ const ListTeams = () => {
         }),
       });
     },
+    retry: false,
     onSuccess(data) {
       const { docs, ...p } = data.data;
       setPaging({ ...p });
@@ -88,13 +88,6 @@ const ListTeams = () => {
       }
     }
   }, [search]);
-
-  const handleOpenDetailTeam = (id: string) => {
-    setModalDetailStatus({
-      isOpen: true,
-      id,
-    });
-  };
 
   const columns: ColumnsType<TNews> = [
     {
@@ -144,7 +137,7 @@ const ListTeams = () => {
           <Button
             className="capitalize"
             type="primary"
-            onClick={() => handleOpenDetailTeam(record.id)}
+            onClick={() => navigate(`/club/${clubId}/team/${record.id}`)}
           >
             <EyeOutlined />
           </Button>
@@ -204,13 +197,6 @@ const ListTeams = () => {
           }}
         />
       </div>
-      {modalDetailStatus.isOpen && (
-        <DetailTeams
-          open={modalDetailStatus.isOpen}
-          id={modalDetailStatus.id}
-          title="Chi tiết team"
-        />
-      )}
     </div>
   );
 };

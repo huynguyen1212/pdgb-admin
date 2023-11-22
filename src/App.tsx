@@ -16,6 +16,7 @@ import ImageManagePage from "./containers/ImageManagePage";
 import AccountPage from "./containers/AccountPage";
 import RequestCreateClubsPage from "./containers/RequestCreateClub";
 import DetailClub from "./containers/DetailClub";
+import DetailTeam from "./containers/DetailTeam";
 interface IPageRouter {
   label: string;
   key: string;
@@ -33,6 +34,11 @@ const PageRouter: IPageRouter[] = [
     label: "Detail club",
     key: "club/:id",
     component: <DetailClub />,
+  },
+  {
+    label: "Detail team",
+    key: "club/:id/team/:teamId",
+    component: <DetailTeam />,
   },
   {
     label: "Request Create clubs",

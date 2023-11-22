@@ -33,7 +33,7 @@ const testData = [
   },
 ];
 
-export default function NewsPage() {
+const ListClubs = () => {
   const [search, setSearch] = useState({ keyword: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [contentType, setContentType] = useState<any>();
@@ -45,11 +45,11 @@ export default function NewsPage() {
   });
 
   const { data, refetch } = useQuery({
-    queryKey: ["newsAll"],
+    queryKey: ["listClub"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/news",
+        url: "/api/cms/club/list",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -57,6 +57,7 @@ export default function NewsPage() {
         }),
       });
     },
+    retry: false,
     onSuccess(data) {
       const { docs, ...p } = data.data;
       setPaging({ ...p });
@@ -179,4 +180,6 @@ export default function NewsPage() {
       </div>
     </div>
   );
-}
+};
+
+export default ListClubs;

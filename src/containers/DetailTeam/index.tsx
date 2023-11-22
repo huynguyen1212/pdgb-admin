@@ -1,4 +1,4 @@
-import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
+import { SearchOutlined, EyeOutlined, LeftOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import {
   Button,
@@ -16,27 +16,39 @@ import {
 } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useRef, useState } from "react";
-import { requestToken } from "../../../configs/api";
-import { cleanObject, getPublic, tryImageUrl } from "../../../configs/help";
-import { queryClient, queryKeys } from "../../../configs/query";
-import { NewsType, TNews } from "../../../configs/type";
-
-interface INewsPage {
-  type: NewsType;
-}
+import { requestToken } from "../../configs/api";
+import { cleanObject, getPublic, tryImageUrl } from "../../configs/help";
+import { queryClient, queryKeys } from "../../configs/query";
+import { TNews } from "../../configs/type";
+import DetailUser from "../DetailClub/users";
+import { useParams, useNavigate } from "react-router-dom";
+import FormDetail from "./Form";
 
 const testData = [
   {
     id: "1",
-    createdAt: new Date(),
-    name: "club 1",
+    name: "Nguyễn Văn Sơn Zai",
+    gender: 1,
+    email: "son.nguyenngoc@amela.vn",
   },
 ];
 
-const ListUsers = () => {
+interface IModalDetail {
+  isOpen: boolean;
+  id: string | number;
+}
+
+const DetailTeam = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState({ keyword: "" });
+  const { id: clubId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [contentType, setContentType] = useState<any>();
+  const [modalDetailStatus, setModalDetailStatus] = useState<IModalDetail>({
+    isOpen: false,
+    id: 0,
+  });
+
   const [paging, setPaging] = useState({
     totalDocs: 0,
     limit: 10,
@@ -44,11 +56,11 @@ const ListUsers = () => {
   });
 
   const { data, refetch } = useQuery({
-    queryKey: ["newsAll"],
+    queryKey: ["listTeams"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/news",
+        url: `/api/cms/team/${clubId}`,
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -56,6 +68,7 @@ const ListUsers = () => {
         }),
       });
     },
+    retry: false,
     onSuccess(data) {
       const { docs, ...p } = data.data;
       setPaging({ ...p });
@@ -79,6 +92,13 @@ const ListUsers = () => {
       }
     }
   }, [search]);
+
+  const handleOpenDetailTeam = (id: string) => {
+    setModalDetailStatus({
+      isOpen: true,
+      id,
+    });
+  };
 
   const columns: ColumnsType<TNews> = [
     {
@@ -112,14 +132,30 @@ const ListUsers = () => {
     },
   ];
 
+  const handleCloseModal = () => {
+    setModalDetailStatus({
+      isOpen: false,
+      id: 0,
+    });
+  };
+
   return (
     <div>
-      <div className="flex flex-row justify-between align-center  mt-10">
+      <div
+        className="mt-2 mb-6 cursor-pointer"
+        onClick={() => navigate(`/club/${clubId}`)}
+      >
+        <LeftOutlined className="mr-2" />
+        <span>Quản lí team</span>
+      </div>
+      <div className="flex flex-row justify-between align-center">
+        <h1 className="page-title">Chi tiết teams</h1>
+      </div>
+      <FormDetail data={data} />
+      <Divider />
+      <div className="flex flex-row justify-between align-center mb-5">
         <h1 className="page-title">Danh sách thành viên</h1>
       </div>
-
-      <Divider />
-
       <Form
         onFinish={(value) => {
           setSearch(value);
@@ -167,4 +203,4 @@ const ListUsers = () => {
   );
 };
 
-export default ListUsers;
+export default DetailTeam;
