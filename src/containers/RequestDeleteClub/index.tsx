@@ -6,12 +6,9 @@ import {
   Col,
   Divider,
   Form,
-  Image,
   Input,
   message,
-  Modal,
   Row,
-  Select,
   Space,
   Table,
 } from "antd";
@@ -20,9 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { requestToken } from "../../configs/api";
-import { cleanObject, getPublic, tryImageUrl } from "../../configs/help";
-import { queryClient, queryKeys } from "../../configs/query";
-import { NewsType, TNews } from "../../configs/type";
+import { cleanObject } from "../../configs/help";
 import ModalDetailRequest from "./ModalDetailRequest";
 
 const ListClubs = () => {
@@ -94,18 +89,18 @@ const ListClubs = () => {
     try {
       const res = await requestToken({
         method: "POST",
-        url: `/api/cms/request/review-registration/${requestActive.id}`,
+        url: `/api/cms/request/review-deletion/${requestActive.id}`,
         data: {
           status: 1,
         },
       });
       if (res) {
-        message.success("Duyệt đơn tạo club thành công");
+        message.success("Duyệt đơn xóa club thành công");
         handleCloseModalRequestDetail();
         refetch();
       }
     } catch (err) {
-      message.error("Duyệt đơn tạo club thất bại");
+      message.error("Duyệt đơn xóa club thất bại");
     }
   };
 
@@ -119,22 +114,22 @@ const ListClubs = () => {
         },
       });
       if (res) {
-        message.success("Từ chối duyệt club thành công");
+        message.success("Từ chối xóa club thành công");
         handleCloseModalRequestDetail();
         refetch();
       }
     } catch (err) {
-      message.error("Từ chối duyệt club thất bại");
+      message.error("Từ chối xóa club thất bại");
     }
   };
 
-  const columns: ColumnsType<TNews> = [
+  const columns: ColumnsType<any> = [
     {
       title: "STT",
       dataIndex: "stt",
       key: "stt",
       width: "100px",
-      render: (_: any, record: TNews, i) =>
+      render: (_: any, record: any, i) =>
         i + 1 + (currentPage - 1) * paging.limit,
     },
     {
@@ -186,7 +181,7 @@ const ListClubs = () => {
   return (
     <div>
       <div className="flex flex-row justify-between align-center">
-        <h1 className="page-title">Yêu cầu tạo clubs</h1>
+        <h1 className="page-title">Yêu cầu xóa clubs</h1>
       </div>
 
       <Divider />

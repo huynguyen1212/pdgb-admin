@@ -13,16 +13,15 @@ const LoginPage: React.FC = () => {
       message.error(error?.response?.data?.message || "Thất bại");
     },
     onSuccess(data, variables, context) {
-      message.success("Thành công");
+      localStorage.setItem("token", data?.data.access_token);
+      nav("/clubs");
+      message.success("Đăng nhập thành công.");
     },
   });
   const nav = useNavigate();
 
   const onFinish = async (values: any) => {
-    // const { data } = await mutateAsync(values);
-    // localStorage.setItem("token", data?.token);
-    nav("/clubs");
-    // message.success("Đăng nhập thành công.");
+    const { data } = await mutateAsync(values);
   };
 
   return (
@@ -33,12 +32,12 @@ const LoginPage: React.FC = () => {
     >
       <h1 className="text-center">Admin Login</h1>
       <Form.Item
-        name="username"
+        name="email"
         rules={[{ required: true, message: "Vui lòng điền tên tài khoản!" }]}
       >
         <Input
           // prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder="Username"
+          placeholder="Email"
         />
       </Form.Item>
       <Form.Item

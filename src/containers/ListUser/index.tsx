@@ -1,6 +1,5 @@
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import moment from "moment";
 import {
   Button,
   Col,
@@ -21,15 +20,12 @@ import { useNavigate } from "react-router-dom";
 
 import { requestToken } from "../../configs/api";
 import { cleanObject, getPublic, tryImageUrl } from "../../configs/help";
-import { queryClient, queryKeys } from "../../configs/query";
-import { NewsType, TNews } from "../../configs/type";
-import ModalDetailRequest from "./ModalDetailRequest";
+import ModalDetailUser from "./ModalDetailUser";
 
-const ListClubs = () => {
+const ListUsers = () => {
   const [search, setSearch] = useState({ keyword: "" });
   const [currentPage, setCurrentPage] = useState(1);
-  const [isOpenModalDetail, setIsOpenModalDetail] = useState<boolean>(false);
-  const [requestActive, setRequestActive] = useState<any>(null);
+  const [contentType, setContentType] = useState<any>();
   const navigate = useNavigate();
   const [paging, setPaging] = useState({
     totalDocs: 0,
@@ -37,12 +33,15 @@ const ListClubs = () => {
     page: 1,
   });
 
+  const [itemActive, setItemActive] = useState<number>(0);
+  const [isOpenModalDetail, setIsOpenModalDetail] = useState<boolean>(false);
+
   const { data, refetch } = useQuery({
-    queryKey: ["listCreateRequest"],
+    queryKey: ["listUsers"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/api/cms/request/list",
+        url: "/api/cms/member/list",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -67,7 +66,7 @@ const ListClubs = () => {
     if (!didMount.current) {
       didMount.current = true;
     } else refetch();
-  }, [currentPage]);
+  }, [currentPage, contentType]);
 
   useEffect(() => {
     if (didMount.current) {
@@ -79,90 +78,42 @@ const ListClubs = () => {
     }
   }, [search]);
 
-  const handlOpenModalRequestDetail = (data: any) => {
-    console.log(data);
+  const handleOpenDetailUser = (id: number) => {
     setIsOpenModalDetail(true);
-    setRequestActive(data);
+    setItemActive(id);
   };
 
-  const handleCloseModalRequestDetail = () => {
+  const handleCloseModal = () => {
     setIsOpenModalDetail(false);
-    setRequestActive(null);
+    setItemActive(0);
   };
 
-  const handleAccept = async () => {
-    try {
-      const res = await requestToken({
-        method: "POST",
-        url: `/api/cms/request/review-registration/${requestActive.id}`,
-        data: {
-          status: 1,
-        },
-      });
-      if (res) {
-        message.success("Duyệt đơn tạo club thành công");
-        handleCloseModalRequestDetail();
-        refetch();
-      }
-    } catch (err) {
-      message.error("Duyệt đơn tạo club thất bại");
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      const res = await requestToken({
-        method: "POST",
-        url: `/api/cms/request/review-registration/${requestActive.id}`,
-        data: {
-          status: 2,
-        },
-      });
-      if (res) {
-        message.success("Từ chối duyệt club thành công");
-        handleCloseModalRequestDetail();
-        refetch();
-      }
-    } catch (err) {
-      message.error("Từ chối duyệt club thất bại");
-    }
-  };
-
-  const columns: ColumnsType<TNews> = [
+  const columns: ColumnsType<any> = [
     {
       title: "STT",
       dataIndex: "stt",
       key: "stt",
       width: "100px",
-      render: (_: any, record: TNews, i) =>
+      render: (_: any, record: any, i) =>
         i + 1 + (currentPage - 1) * paging.limit,
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      width: "300px",
-      render: (text) => (
-        <div className="">{moment(text).format("YYYY/MM/DD hh:mm:ss")}</div>
-      ),
-    },
-    {
-      title: "Tên club",
-      dataIndex: "club_name",
-      key: "club_name",
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
       render: (text) => <div className="max-w-[300px]">{text}</div>,
     },
     {
-      title: "Số thành viên",
-      dataIndex: "number_of_members",
-      key: "number_of_members",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       render: (text) => <div className="max-w-[300px]">{text}</div>,
     },
     {
-      title: "Quản lí",
-      render: (record) => (
-        <div className="max-w-[300px]">{record.manager.name}</div>
-      ),
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
+      render: (text) => <div className="max-w-[300px]">{text}</div>,
     },
     {
       title: "Action",
@@ -174,7 +125,7 @@ const ListClubs = () => {
           <Button
             className="capitalize"
             type="primary"
-            onClick={() => handlOpenModalRequestDetail(record)}
+            onClick={() => handleOpenDetailUser(record.id)}
           >
             <EyeOutlined />
           </Button>
@@ -186,7 +137,7 @@ const ListClubs = () => {
   return (
     <div>
       <div className="flex flex-row justify-between align-center">
-        <h1 className="page-title">Yêu cầu tạo clubs</h1>
+        <h1 className="page-title">Danh sách tài khoản</h1>
       </div>
 
       <Divider />
@@ -235,16 +186,14 @@ const ListClubs = () => {
         />
       </div>
       {isOpenModalDetail && (
-        <ModalDetailRequest
+        <ModalDetailUser
+          id={itemActive}
           open={isOpenModalDetail}
-          data={requestActive}
-          handleClose={handleCloseModalRequestDetail}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
+          handleClose={handleCloseModal}
         />
       )}
     </div>
   );
 };
 
-export default ListClubs;
+export default ListUsers;

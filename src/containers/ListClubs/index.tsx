@@ -1,5 +1,6 @@
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
+import moment from "moment";
 import {
   Button,
   Col,
@@ -58,9 +59,13 @@ const ListClubs = () => {
       });
     },
     retry: false,
-    onSuccess(data) {
-      const { docs, ...p } = data.data;
-      setPaging({ ...p });
+    onSuccess(res) {
+      const { data, ...p } = res.data;
+      setPaging({
+        totalDocs: data.length,
+        limit: 10,
+        page: currentPage,
+      });
     },
   });
 
@@ -97,13 +102,19 @@ const ListClubs = () => {
       key: "createdAt",
       width: "300px",
       render: (text) => (
-        <div className="">{new Date(text).toLocaleString()}</div>
+        <div className="">{moment(text).format("YYYY/MM/DD hh:mm:ss")}</div>
       ),
     },
     {
       title: "Tên ",
       dataIndex: "name",
       key: "name",
+      render: (text) => <div className="max-w-[300px]">{text}</div>,
+    },
+    {
+      title: "Số thành viên",
+      dataIndex: "number_of_members",
+      key: "number_of_members",
       render: (text) => <div className="max-w-[300px]">{text}</div>,
     },
     {
@@ -167,7 +178,7 @@ const ListClubs = () => {
       <div>
         <Table
           columns={columns}
-          dataSource={testData}
+          dataSource={data?.data.data}
           pagination={{
             current: currentPage,
             total: paging.totalDocs,

@@ -15,8 +15,10 @@ import { NewsType } from "./configs/type";
 import ImageManagePage from "./containers/ImageManagePage";
 import AccountPage from "./containers/AccountPage";
 import RequestCreateClubsPage from "./containers/RequestCreateClub";
+import RequestDeleteClubsPage from "./containers/RequestDeleteClub";
 import DetailClub from "./containers/DetailClub";
 import DetailTeam from "./containers/DetailTeam";
+import ListUsers from "./containers/ListUser";
 interface IPageRouter {
   label: string;
   key: string;
@@ -48,7 +50,7 @@ const PageRouter: IPageRouter[] = [
   {
     label: "Request delete clubs",
     key: "request-delete-clubs",
-    component: <RequestCreateClubsPage />,
+    component: <RequestDeleteClubsPage />,
   },
   {
     label: "Quản lý Clubs",
@@ -63,7 +65,7 @@ const PageRouter: IPageRouter[] = [
   {
     label: "Users",
     key: "users",
-    component: <AccountPage />,
+    component: <ListUsers />,
   },
 ];
 
