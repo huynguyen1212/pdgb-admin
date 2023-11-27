@@ -33,11 +33,11 @@ const ListClubs = () => {
   });
 
   const { data, refetch } = useQuery({
-    queryKey: ["listCreateRequest"],
+    queryKey: ["listDeleteRequest"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/api/cms/request/list",
+        url: "/api/cms/request/list-delete?status=1",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -91,7 +91,7 @@ const ListClubs = () => {
         method: "POST",
         url: `/api/cms/request/review-deletion/${requestActive.id}`,
         data: {
-          status: 1,
+          status: 3,
         },
       });
       if (res) {

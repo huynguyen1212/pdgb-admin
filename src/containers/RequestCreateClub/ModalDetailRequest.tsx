@@ -20,6 +20,7 @@ const ModalDetailRequest = ({
   handleReject,
 }: IProps) => {
   const [form] = Form.useForm();
+  const [sports, setSports] = useState<any>([]);
 
   useEffect(() => {
     if (open) {
@@ -28,6 +29,7 @@ const ModalDetailRequest = ({
         club_name: clubName,
         number_of_members: member,
         created_at: createAt,
+        sports_disciplines: sportsDisciplines,
       } = data;
       const {
         name: managerName,
@@ -42,6 +44,7 @@ const ModalDetailRequest = ({
         managerEmail,
         managerPhone,
       });
+      setSports(sportsDisciplines);
     }
   }, [open]);
 
@@ -117,8 +120,24 @@ const ModalDetailRequest = ({
             <Form.Item
               label={<div className="capitalize font-[500]">Số điện thoại</div>}
               name={"managerPhone"}
+              className="mb-0"
             >
               <Input disabled bordered={false} style={{ color: "#000000" }} />
+            </Form.Item>
+          </Col>
+          <Col span={24} className="mt-2 mb-5">
+            <Form.Item
+              label={<div className="capitalize font-[500]">Các bộ môn</div>}
+              name={"managerPhone"}
+              className="mb-0"
+            >
+              <div className="flex">
+                {sports.map((item: any) => (
+                  <span className="px-3 py-1 border-solid	border-2 border-sky-500 mr-2 rounded-md">
+                    {item.name}
+                  </span>
+                ))}
+              </div>
             </Form.Item>
           </Col>
         </Row>

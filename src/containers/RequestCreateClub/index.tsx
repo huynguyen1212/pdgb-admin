@@ -42,7 +42,7 @@ const ListClubs = () => {
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/api/cms/request/list",
+        url: "/api/cms/request/list-create?status=2",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -80,7 +80,6 @@ const ListClubs = () => {
   }, [search]);
 
   const handlOpenModalRequestDetail = (data: any) => {
-    console.log(data);
     setIsOpenModalDetail(true);
     setRequestActive(data);
   };

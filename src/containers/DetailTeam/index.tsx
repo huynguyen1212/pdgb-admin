@@ -20,7 +20,6 @@ import { requestToken } from "../../configs/api";
 import { cleanObject, getPublic, tryImageUrl } from "../../configs/help";
 import { queryClient, queryKeys } from "../../configs/query";
 import { TNews } from "../../configs/type";
-import DetailUser from "../DetailClub/users";
 import { useParams, useNavigate } from "react-router-dom";
 import FormDetail from "./Form";
 
@@ -100,7 +99,7 @@ const DetailTeam = () => {
     });
   };
 
-  const columns: ColumnsType<TNews> = [
+  const columns: ColumnsType<any> = [
     {
       title: "STT",
       dataIndex: "stt",
@@ -143,7 +142,7 @@ const DetailTeam = () => {
     <div>
       <div
         className="mt-2 mb-6 cursor-pointer"
-        onClick={() => navigate(`/club/${clubId}`)}
+        onClick={() => navigate(`/clubs/${clubId}`)}
       >
         <LeftOutlined className="mr-2" />
         <span>Quản lí team</span>

@@ -128,7 +128,7 @@ const ListClubs = () => {
             className="capitalize"
             type="primary"
             onClick={() => {
-              navigate(`/club/${record.id}`);
+              navigate(`/clubs/${record.id}`);
             }}
           >
             <EyeOutlined />

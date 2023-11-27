@@ -1,24 +1,15 @@
-import {
-  AuditOutlined,
-  FolderOpenOutlined,
-  UserOutlined,
-  PullRequestOutlined,
-  DeleteOutlined,
-  AppstoreAddOutlined,
-} from "@ant-design/icons";
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+
 import MyLayout from "./components/Layout";
 import LoginPage from "./containers/LoginPage";
 import NewsPage from "./containers/ListClubs";
-import { NewsType } from "./configs/type";
-import ImageManagePage from "./containers/ImageManagePage";
-import AccountPage from "./containers/AccountPage";
 import RequestCreateClubsPage from "./containers/RequestCreateClub";
 import RequestDeleteClubsPage from "./containers/RequestDeleteClub";
 import DetailClub from "./containers/DetailClub";
-import DetailTeam from "./containers/DetailTeam";
 import ListUsers from "./containers/ListUser";
+import ListMatchs from "./containers/ListMatchs";
+
 interface IPageRouter {
   label: string;
   key: string;
@@ -34,13 +25,8 @@ const PageRouter: IPageRouter[] = [
   },
   {
     label: "Detail club",
-    key: "club/:id",
+    key: "clubs/:id",
     component: <DetailClub />,
-  },
-  {
-    label: "Detail team",
-    key: "club/:id/team/:teamId",
-    component: <DetailTeam />,
   },
   {
     label: "Request Create clubs",
@@ -60,7 +46,7 @@ const PageRouter: IPageRouter[] = [
   {
     label: "Matchs",
     key: "matchs",
-    component: <NewsPage />,
+    component: <ListMatchs />,
   },
   {
     label: "Users",

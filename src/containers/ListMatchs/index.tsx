@@ -1,5 +1,6 @@
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
+import moment from "moment";
 import {
   Button,
   Col,
@@ -16,35 +17,17 @@ import {
 } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useRef, useState } from "react";
-import { requestToken } from "../../../configs/api";
-import { cleanObject, getPublic, tryImageUrl } from "../../../configs/help";
-import { queryClient, queryKeys } from "../../../configs/query";
-import { TNews } from "../../../configs/type";
-// import DetailTeams from "./DetailTeams";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const testData = [
-  {
-    id: "1",
-    createdAt: new Date(),
-    name: "club 1",
-    totalMembers: 50,
-    type: "Bóng đá",
-  },
-];
+import { requestToken } from "../../configs/api";
+import { cleanObject } from "../../configs/help";
+import { TNews } from "../../configs/type";
 
-interface IModalDetail {
-  isOpen: boolean;
-  id: string | number;
-}
-
-const ListTeams = () => {
+const ListMatchs = () => {
   const [search, setSearch] = useState({ keyword: "" });
-  const { id: clubId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [contentType, setContentType] = useState<any>();
   const navigate = useNavigate();
-
   const [paging, setPaging] = useState({
     totalDocs: 0,
     limit: 10,
@@ -52,11 +35,11 @@ const ListTeams = () => {
   });
 
   const { data, refetch } = useQuery({
-    queryKey: ["listTeams"],
+    queryKey: ["listClub"],
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: `/api/cms/team/${clubId}`,
+        url: "/api/cms/match/list",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
@@ -65,9 +48,13 @@ const ListTeams = () => {
       });
     },
     retry: false,
-    onSuccess(data) {
-      const { docs, ...p } = data.data;
-      setPaging({ ...p });
+    onSuccess(res) {
+      const { data, ...p } = res.data;
+      setPaging({
+        totalDocs: data.length,
+        limit: 10,
+        page: currentPage,
+      });
     },
   });
 
@@ -89,43 +76,84 @@ const ListTeams = () => {
     }
   }, [search]);
 
-  const columns: ColumnsType<TNews> = [
+  const columns: ColumnsType<any> = [
     {
       title: "STT",
       dataIndex: "stt",
       key: "stt",
       width: "100px",
-      // sorter: true,
       render: (_: any, record: TNews, i) =>
         i + 1 + (currentPage - 1) * paging.limit,
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: "300px",
-      render: (text) => (
-        <div className="">{new Date(text).toLocaleString()}</div>
+      title: "Người tạo",
+      dataIndex: "createdMember",
+      key: "createdMember",
+      width: "200px",
+      render: (_, record) => (
+        <div className="">{record?.creator_member?.name || ""}</div>
       ),
     },
     {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <div className="max-w-[300px]">{text}</div>,
-    },
-    {
-      title: "Số thành viên",
-      dataIndex: "totalMembers",
-      key: "totalMembers",
-      width: 200,
-      render: (text) => <div className="max-w-[300px]">{text}</div>,
-    },
-    {
       title: "Bộ môn",
-      dataIndex: "type",
-      key: "type",
+      dataIndex: "sportType",
+      key: "sportType",
+      width: "100px",
+      render: (_, record) => (
+        <div className="">{record?.sports_discipline?.name || ""}</div>
+      ),
+    },
+    {
+      title: "Thời gian",
+      dataIndex: "time",
+      key: "time",
+      width: "250px",
+      render: (_, record) => (
+        <div className="max-w-[300px]">
+          {`${record.match_date} ${record.match_time}` || ""}
+        </div>
+      ),
+    },
+    {
+      title: "Địa điểm",
+      dataIndex: "venue",
+      key: "venue",
       render: (text) => <div className="max-w-[300px]">{text}</div>,
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+      render: (text) => <div className="max-w-[300px]">{text}</div>,
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status_name",
+      width: "100px",
+      key: "status_name",
+      render: (_, record) => {
+        let className = "";
+        switch (record.status) {
+          case 1:
+            className = "bg-green-500";
+            break;
+          case 2:
+            className = "bg-red-500";
+            break;
+          case 3:
+            className = "bg-zinc-600";
+            break;
+          default:
+            className = "bg-green-500";
+        }
+        return (
+          <div
+            className={`max-w-[300px] text-center p-1 rounded-md text-white ${className}`}
+          >
+            {record.status_name}
+          </div>
+        );
+      },
     },
     {
       title: "Action",
@@ -137,7 +165,9 @@ const ListTeams = () => {
           <Button
             className="capitalize"
             type="primary"
-            onClick={() => navigate(`/club/${clubId}/team/${record.id}`)}
+            onClick={() => {
+              navigate(`/clubs/${record.id}`);
+            }}
           >
             <EyeOutlined />
           </Button>
@@ -148,8 +178,8 @@ const ListTeams = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-between align-center mt-10">
-        <h1 className="page-title">Danh sách đội nhóm</h1>
+      <div className="flex flex-row justify-between align-center">
+        <h1 className="page-title">Quản lý matchs</h1>
       </div>
 
       <Divider />
@@ -186,7 +216,7 @@ const ListTeams = () => {
       <div>
         <Table
           columns={columns}
-          dataSource={testData}
+          dataSource={data?.data.data}
           pagination={{
             current: currentPage,
             total: paging.totalDocs,
@@ -201,4 +231,4 @@ const ListTeams = () => {
   );
 };
 
-export default ListTeams;
+export default ListMatchs;
