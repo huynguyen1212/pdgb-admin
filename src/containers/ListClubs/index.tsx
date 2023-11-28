@@ -113,8 +113,8 @@ const ListClubs = () => {
     },
     {
       title: "Số thành viên",
-      dataIndex: "number_of_members",
-      key: "number_of_members",
+      dataIndex: "members_count",
+      key: "members_count",
       render: (text) => <div className="max-w-[300px]">{text}</div>,
     },
     {

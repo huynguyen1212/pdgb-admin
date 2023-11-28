@@ -1,20 +1,7 @@
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
-import {
-  Button,
-  Col,
-  Divider,
-  Form,
-  Image,
-  Input,
-  message,
-  Modal,
-  Row,
-  Select,
-  Space,
-  Table,
-} from "antd";
+import { Button, Col, Divider, Form, Input, Row, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { requestToken } from "../../configs/api";
 import { cleanObject } from "../../configs/help";
 import { TNews } from "../../configs/type";
+import ModalDetailMatch from "./ModalDetailMatch";
 
 const ListMatchs = () => {
   const [search, setSearch] = useState({ keyword: "" });
@@ -33,6 +21,8 @@ const ListMatchs = () => {
     limit: 10,
     page: 1,
   });
+  const [itemActive, setItemActive] = useState<any>(null);
+  const [isOpenModalDetail, setIsOpenModalDetail] = useState<boolean>(false);
 
   const { data, refetch } = useQuery({
     queryKey: ["listClub"],
@@ -75,6 +65,16 @@ const ListMatchs = () => {
       }
     }
   }, [search]);
+
+  const handleOpenDetailMatch = (data: any) => {
+    setIsOpenModalDetail(true);
+    setItemActive(data);
+  };
+
+  const handleCloseModalDetail = () => {
+    setIsOpenModalDetail(false);
+    setItemActive(null);
+  };
 
   const columns: ColumnsType<any> = [
     {
@@ -134,14 +134,22 @@ const ListMatchs = () => {
       render: (_, record) => {
         let className = "";
         switch (record.status) {
+          // 1 mới
+          // 2 đã chấp nhận
+          // 3 đang diễn ra
+          // 4 đã xong
+          // 5 hủy
           case 1:
             className = "bg-green-500";
             break;
           case 2:
-            className = "bg-red-500";
+            className = "bg-sky-500";
             break;
           case 3:
-            className = "bg-zinc-600";
+            className = "bg-red-500";
+            break;
+          case 5:
+            className = "bg-violet-500";
             break;
           default:
             className = "bg-green-500";
@@ -165,9 +173,7 @@ const ListMatchs = () => {
           <Button
             className="capitalize"
             type="primary"
-            onClick={() => {
-              navigate(`/clubs/${record.id}`);
-            }}
+            onClick={() => handleOpenDetailMatch(record)}
           >
             <EyeOutlined />
           </Button>
@@ -227,6 +233,11 @@ const ListMatchs = () => {
           }}
         />
       </div>
+      <ModalDetailMatch
+        open={isOpenModalDetail}
+        data={itemActive}
+        handleClose={handleCloseModalDetail}
+      />
     </div>
   );
 };
