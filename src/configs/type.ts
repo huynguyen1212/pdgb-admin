@@ -5,19 +5,9 @@ export interface TTag {
 }
 
 export interface TNews {
-  _id: string;
-  title: string;
-  slug: string;
-  content: string;
-  status: string;
-  date: Date;
-  image: TImage;
-  thumb: TImage;
-  tags: TTag[];
-  deleted: boolean;
+  id: string;
+  name: string;
   createdAt: Date;
-  updatedAt: Date;
-  __v: number;
 }
 
 export interface TImage {

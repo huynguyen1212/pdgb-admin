@@ -1,37 +1,100 @@
 import {
-  Button,
-  Dropdown,
-  Layout,
-  Menu,
-  MenuProps,
-  message,
-  theme,
-} from "antd";
+  AuditOutlined,
+  FolderOpenOutlined,
+  UserOutlined,
+  PullRequestOutlined,
+  DeleteOutlined,
+  AppstoreAddOutlined,
+} from "@ant-design/icons";
+import { Button, Dropdown, Layout, Menu, message, theme } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { pages } from "../../App";
+import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 
+import NewsPage from "../../containers/ListClubs";
+import ImageManagePage from "../../containers/ImageManagePage";
+import AccountPage from "../../containers/AccountPage";
 const { Header, Footer } = Layout;
 
-type MenuItem = Required<MenuProps>["items"][number];
+type MenuItem = {
+  label: React.ReactNode;
+  key: React.Key;
+  icon?: React.ReactNode;
+  children?: MenuItem[];
+  componnent?: React.ReactNode;
+  isnavbar?: boolean;
+};
+
+const pages: MenuItem[] = [
+  {
+    label: <Link to={"/clubs"}>Quản lý Clubs</Link>,
+    key: "clubs",
+    icon: <AuditOutlined />,
+    componnent: <NewsPage />,
+    isnavbar: true,
+  },
+  {
+    label: "Requests",
+    key: "requests",
+    icon: <PullRequestOutlined />,
+    componnent: <NewsPage />,
+    children: [
+      {
+        label: <Link to={"/request-create-clubs"}>Tạo club</Link>,
+        key: "request-create-clubs",
+        icon: <AppstoreAddOutlined />,
+        componnent: <NewsPage />,
+      },
+      {
+        label: <Link to={"/request-delete-clubs"}>Xóa club</Link>,
+        key: "request-delete-clubs",
+        icon: <DeleteOutlined />,
+        componnent: <NewsPage />,
+      },
+    ],
+  },
+  {
+    label: <Link to={"/matchs"}>Quản lý Matchs</Link>,
+    key: "matchs",
+    icon: <FolderOpenOutlined />,
+    componnent: <ImageManagePage />,
+    isnavbar: true,
+  },
+  {
+    label: <Link to={"/users"}>Quản lý tài khoản</Link>,
+    key: "users",
+    icon: <UserOutlined />,
+    componnent: <AccountPage />,
+    isnavbar: true,
+  },
+];
 
 interface Props extends React.PropsWithChildren {}
 
 export default function MyLayout(props: Props) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [current, setCurrent] = useState<string>("");
+  const { pathname } = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const nav = useNavigate();
-  // useEffect(() => {
-  //   const isLogined = localStorage.getItem("token");
-  //   if (!isLogined) {
-  //     nav("/");
-  //     message.error("Vui lòng đăng nhập lại.");
-  //   }
-  // }, []);
+
+  useEffect(() => {
+    const isLogined = localStorage.getItem("token");
+    if (!isLogined) {
+      nav("/");
+      message.error("Vui lòng đăng nhập lại.");
+    } else {
+      setCurrent(pathname.slice(1, pathname.length));
+    }
+  }, []);
+
+  const onClick = (e: any) => {
+    setCurrent(e.key);
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
@@ -44,9 +107,12 @@ export default function MyLayout(props: Props) {
         </h1>
         <Menu
           theme="dark"
+          onClick={onClick}
           defaultSelectedKeys={["1"]}
+          selectedKeys={[current]}
           mode="inline"
           items={pages || []}
+          defaultOpenKeys={["requests"]}
         />
       </Sider>
       <Layout className="site-layout">
@@ -84,7 +150,7 @@ export default function MyLayout(props: Props) {
           <Outlet />
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          ©{new Date().getFullYear()} Created by HuyNQ{" "}
+          ©{new Date().getFullYear()} Created by Phi Đội Gà Bay{" "}
         </Footer>
       </Layout>
     </Layout>

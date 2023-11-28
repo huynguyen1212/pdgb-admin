@@ -1,47 +1,57 @@
-import {
-  AuditOutlined,
-  FolderOpenOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+
 import MyLayout from "./components/Layout";
 import LoginPage from "./containers/LoginPage";
-import NewsPage from "./containers/NewsPage";
-import { NewsType } from "./configs/type";
-import ImageManagePage from "./containers/ImageManagePage";
-import AccountPage from "./containers/AccountPage";
+import NewsPage from "./containers/ListClubs";
+import RequestCreateClubsPage from "./containers/RequestCreateClub";
+import RequestDeleteClubsPage from "./containers/RequestDeleteClub";
+import DetailClub from "./containers/DetailClub";
+import ListUsers from "./containers/ListUser";
+import ListMatchs from "./containers/ListMatchs";
 
-type MenuItem = {
-  label: React.ReactNode;
-  key: React.Key;
-  icon?: React.ReactNode;
-  children?: MenuItem[];
-  componnent?: React.ReactNode;
-  isnavbar?: boolean;
-};
+interface IPageRouter {
+  label: string;
+  key: string;
+  component?: React.ReactNode;
+  children?: IPageRouter[];
+}
 
-export const pages: MenuItem[] = [
+const PageRouter: IPageRouter[] = [
   {
-    label: <Link to={"/clubs"}>Quản lý Clubs</Link>,
+    label: "Clubs",
     key: "clubs",
-    icon: <AuditOutlined />,
-    componnent: <NewsPage type={NewsType.CONTENT} />,
-    isnavbar: true,
+    component: <NewsPage />,
   },
   {
-    label: <Link to={"/matchs"}>Quản lý Matchs</Link>,
+    label: "Detail club",
+    key: "clubs/:id",
+    component: <DetailClub />,
+  },
+  {
+    label: "Request Create clubs",
+    key: "request-create-clubs",
+    component: <RequestCreateClubsPage />,
+  },
+  {
+    label: "Request delete clubs",
+    key: "request-delete-clubs",
+    component: <RequestDeleteClubsPage />,
+  },
+  {
+    label: "Quản lý Clubs",
+    key: "clubs",
+    component: <NewsPage />,
+  },
+  {
+    label: "Matchs",
     key: "matchs",
-    icon: <FolderOpenOutlined />,
-    componnent: <ImageManagePage />,
-    isnavbar: true,
+    component: <ListMatchs />,
   },
   {
-    label: <Link to={"/account"}>Quản lý tài khoản</Link>,
-    key: "account",
-    icon: <UserOutlined />,
-    componnent: <AccountPage />,
-    isnavbar: true,
+    label: "Users",
+    key: "users",
+    component: <ListUsers />,
   },
 ];
 
@@ -50,13 +60,13 @@ const App: React.FC = () => {
     <Routes>
       <Route path={`/`} element={<LoginPage />} />;
       <Route element={<MyLayout />}>
-        {pages.map((k, i) => {
+        {PageRouter.map((k, i) => {
           if (k?.children && k?.children?.length > 0) {
             return k.children?.map((l, j) => (
-              <Route key={l.key} path={`${l.key}`} element={l.componnent} />
+              <Route key={l.key} path={`${l.key}`} element={l?.component} />
             ));
           }
-          return <Route key={k.key} path={`${k.key}`} element={k.componnent} />;
+          return <Route key={k.key} path={`${k.key}`} element={k?.component} />;
         })}
       </Route>
       <Route path={`*`} element={<h1>404</h1>} />
