@@ -95,7 +95,7 @@ const ListClubs = () => {
         method: "POST",
         url: `/api/cms/request/review-registration/${requestActive.id}`,
         data: {
-          status: 1,
+          status: 2,
         },
       });
       if (res) {
@@ -114,7 +114,7 @@ const ListClubs = () => {
         method: "POST",
         url: `/api/cms/request/review-registration/${requestActive.id}`,
         data: {
-          status: 2,
+          status: 3,
         },
       });
       if (res) {
