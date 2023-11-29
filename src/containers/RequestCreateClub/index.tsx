@@ -42,7 +42,7 @@ const ListClubs = () => {
     queryFn: () => {
       return requestToken({
         method: "GET",
-        url: "/api/cms/request/list-create?status=2",
+        url: "/api/cms/request/list-create?status=1",
         params: cleanObject({
           page: currentPage,
           pageSize: paging.limit,
